@@ -37,7 +37,7 @@ export interface Category {
   productCount: number;
 }
 
-export type Badge = "Nou" | "Bestseller" | "Reducere" | "Stoc limitat";
+export type Badge = "Nou" | "Bestseller" | "Reducere" | "Stoc limitat" | "Stoc epuizat";
 
 export interface Spec {
   label: string;

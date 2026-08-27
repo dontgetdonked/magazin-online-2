@@ -3,6 +3,7 @@ import { categories } from "@/lib/categories";
 import { toolIcons, IconArrowUpRight } from "@/components/icons";
 import { SectionKicker } from "@/components/ui/section-kicker";
 import { Reveal } from "@/components/ui/reveal";
+import { formatCount } from "@/lib/utils";
 
 export function CategoriesSection() {
   return (
@@ -31,9 +32,9 @@ export function CategoriesSection() {
                 </div>
                 <div className="mt-10">
                   <h3 className="font-display text-xl text-ink-950">{cat.name}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-taupe-500">{cat.description}</p>
-                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-bronze-600">
-                    {cat.productCount} produse
+                  <p className="mt-2 text-sm leading-relaxed text-taupe-600">{cat.description}</p>
+                  <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-bronze-700">
+                    {formatCount(cat.productCount, "produs", "produse")}
                   </p>
                 </div>
               </Link>

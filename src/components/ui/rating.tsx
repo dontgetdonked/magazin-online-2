@@ -1,5 +1,5 @@
 import { IconStar } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn, formatCount } from "@/lib/utils";
 
 export function Rating({
   value,
@@ -13,9 +13,17 @@ export function Rating({
   size?: "sm" | "md";
 }) {
   const starSize = size === "md" ? "h-4 w-4" : "h-3.5 w-3.5";
+  const label =
+    count !== undefined
+      ? `Evaluare ${value.toFixed(1)} din 5, ${formatCount(count, "recenzie", "recenzii")}`
+      : `Evaluare ${value.toFixed(1)} din 5`;
   return (
-    <div className={cn("flex items-center gap-1.5", className)}>
-      <div className="flex items-center gap-0.5 text-bronze-500">
+    <div
+      role="img"
+      aria-label={label}
+      className={cn("flex items-center gap-1.5", className)}
+    >
+      <div aria-hidden="true" className="flex items-center gap-0.5 text-bronze-500">
         {Array.from({ length: 5 }).map((_, i) => (
           <IconStar
             key={i}
@@ -23,7 +31,7 @@ export function Rating({
           />
         ))}
       </div>
-      <span className="font-mono text-xs text-taupe-500">
+      <span aria-hidden="true" className="font-mono text-xs text-taupe-600">
         {value.toFixed(1)}
         {count !== undefined && ` · ${count}`}
       </span>

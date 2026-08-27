@@ -31,6 +31,7 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 const STORAGE_KEY = "stratum-cart-v1";
+export const MAX_LINE_QUANTITY = 20;
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
@@ -62,11 +63,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (existing) {
         return prev.map((l) =>
           l.product.id === product.id
-            ? { ...l, quantity: l.quantity + quantity }
+            ? { ...l, quantity: Math.min(MAX_LINE_QUANTITY, l.quantity + quantity) }
             : l,
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity: Math.min(MAX_LINE_QUANTITY, quantity) }];
     });
     setIsOpen(true);
   }, []);
@@ -80,7 +81,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       quantity <= 0
         ? prev.filter((l) => l.product.id !== productId)
         : prev.map((l) =>
-            l.product.id === productId ? { ...l, quantity } : l,
+            l.product.id === productId
+              ? { ...l, quantity: Math.min(MAX_LINE_QUANTITY, quantity) }
+              : l,
           ),
     );
   }, []);

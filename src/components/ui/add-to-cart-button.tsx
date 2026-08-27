@@ -20,6 +20,20 @@ export function AddToCartButton({
   const { addItem } = useCart();
   const [justAdded, setJustAdded] = useState(false);
 
+  if (!product.inStock) {
+    return (
+      <span
+        className={cn(
+          "inline-flex shrink-0 cursor-not-allowed items-center justify-center gap-2 whitespace-nowrap rounded-full bg-taupe-200/60 font-mono text-xs uppercase tracking-[0.14em] text-taupe-600",
+          full ? "h-12 w-full px-6 text-sm" : "h-10 px-4",
+          className,
+        )}
+      >
+        Stoc epuizat
+      </span>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -31,7 +45,7 @@ export function AddToCartButton({
         window.setTimeout(() => setJustAdded(false), 1600);
       }}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full bg-ink-950 font-mono text-xs uppercase tracking-[0.14em] text-paper-50 transition-all duration-300 hover:bg-bronze-600 active:scale-95",
+        "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-ink-950 font-mono text-xs uppercase tracking-[0.14em] text-paper-50 transition-colors duration-300 hover:bg-bronze-600 active:scale-95",
         full ? "h-12 w-full px-6 text-sm" : "h-10 px-4",
         className,
       )}

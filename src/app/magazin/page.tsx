@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ categorie?: string }>;
+  searchParams: Promise<{ categorie?: string; cauta?: string }>;
 }) {
-  const { categorie } = await searchParams;
+  const { categorie, cauta } = await searchParams;
   const category = categorie ? getCategory(categorie) : undefined;
 
   return (
@@ -33,7 +33,10 @@ export default async function ShopPage({
       </div>
 
       <div className="mx-auto max-w-7xl px-6 pb-24 lg:px-8">
-        <ShopBrowser initialCategory={category?.slug as CategorySlug | undefined} />
+        <ShopBrowser
+          initialCategory={category?.slug as CategorySlug | undefined}
+          initialQuery={cauta}
+        />
       </div>
     </div>
   );

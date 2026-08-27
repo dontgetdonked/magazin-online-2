@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/components/providers/cart-provider";
+import { useOverlayDialog } from "@/hooks/use-overlay-dialog";
 import { categories } from "@/lib/categories";
 import { toolIcons, LogoMark, IconSearch, IconCart, IconMenu, IconClose, IconChevronDown, IconPhone } from "@/components/icons";
 import { SearchOverlay } from "./search-overlay";
-import { cn } from "@/lib/utils";
+import { cn, formatCount } from "@/lib/utils";
 
 const navLinks = [
   { href: "/", label: "Acasă" },
@@ -24,6 +25,8 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
   const { count, openCart } = useCart();
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useOverlayDialog<HTMLDivElement>(mobileOpen, () => setMobileOpen(false));
 
   // Reset transient nav state when the route changes. Adjusted during
   // render (React's documented pattern for this) rather than in an
@@ -42,12 +45,25 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // The Categorii popover is a lightweight inline disclosure, not a modal
+  // (no scroll lock/focus trap) — just close it on outside click or Escape.
   useEffect(() => {
-    document.documentElement.style.overflow = mobileOpen ? "hidden" : "";
+    if (!categoriesOpen) return;
+    function handlePointer(e: PointerEvent) {
+      if (categoriesRef.current && !categoriesRef.current.contains(e.target as Node)) {
+        setCategoriesOpen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setCategoriesOpen(false);
+    }
+    document.addEventListener("pointerdown", handlePointer);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.documentElement.style.overflow = "";
+      document.removeEventListener("pointerdown", handlePointer);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [mobileOpen]);
+  }, [categoriesOpen]);
 
   return (
     <>
@@ -99,11 +115,18 @@ export function Header() {
               </Link>
             ))}
             <div
+              ref={categoriesRef}
               className="relative"
               onMouseEnter={() => setCategoriesOpen(true)}
               onMouseLeave={() => setCategoriesOpen(false)}
             >
-              <button className="flex items-center gap-1 text-sm font-medium text-ink-950/80 transition-colors hover:text-ink-950">
+              <button
+                onClick={() => setCategoriesOpen((open) => !open)}
+                aria-expanded={categoriesOpen}
+                aria-haspopup="true"
+                aria-controls="categories-popover"
+                className="flex items-center gap-1 text-sm font-medium text-ink-950/80 transition-colors hover:text-ink-950"
+              >
                 Categorii
                 <IconChevronDown
                   className={cn("h-3.5 w-3.5 transition-transform", categoriesOpen && "rotate-180")}
@@ -112,6 +135,7 @@ export function Header() {
               <AnimatePresence>
                 {categoriesOpen && (
                   <motion.div
+                    id="categories-popover"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
@@ -124,6 +148,7 @@ export function Header() {
                         <Link
                           key={cat.slug}
                           href={`/magazin?categorie=${cat.slug}`}
+                          onClick={() => setCategoriesOpen(false)}
                           className="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-paper-100"
                         >
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-paper-100 text-bronze-600">
@@ -131,7 +156,7 @@ export function Header() {
                           </div>
                           <div>
                             <p className="font-display text-sm text-ink-950">{cat.name}</p>
-                            <p className="mt-0.5 line-clamp-1 text-xs text-taupe-500">
+                            <p className="mt-0.5 line-clamp-1 text-xs text-taupe-600">
                               {cat.description}
                             </p>
                           </div>
@@ -154,7 +179,7 @@ export function Header() {
             </button>
             <button
               onClick={openCart}
-              aria-label="Deschide coșul"
+              aria-label={count > 0 ? `Deschide coșul (${formatCount(count, "produs", "produse")})` : "Deschide coșul"}
               className="relative flex h-10 w-10 items-center justify-center rounded-full text-ink-950/80 transition-colors hover:bg-ink-950/5 hover:text-ink-950"
             >
               <IconCart className="h-5 w-5" />
@@ -178,23 +203,55 @@ export function Header() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            ref={mobileMenuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Meniu de navigare"
+            tabIndex={-1}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[75] bg-ink-950 md:hidden"
+            className="fixed inset-0 z-[75] overflow-y-auto bg-ink-950 focus:outline-none md:hidden"
           >
             <div className="flex items-center justify-between px-6 py-4">
               <Link href="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
                 <LogoMark className="h-8 w-8 text-paper-50" />
                 <span className="font-display text-xl text-paper-50">STRATUM</span>
               </Link>
-              <button
-                onClick={() => setMobileOpen(false)}
-                aria-label="Închide meniul"
-                className="flex h-10 w-10 items-center justify-center rounded-full text-paper-50 hover:bg-paper-50/10"
-              >
-                <IconClose className="h-5 w-5" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  aria-label="Deschide căutarea"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-paper-50 hover:bg-paper-50/10"
+                >
+                  <IconSearch className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    openCart();
+                  }}
+                  aria-label={count > 0 ? `Deschide coșul (${formatCount(count, "produs", "produse")})` : "Deschide coșul"}
+                  className="relative flex h-10 w-10 items-center justify-center rounded-full text-paper-50 hover:bg-paper-50/10"
+                >
+                  <IconCart className="h-5 w-5" />
+                  {count > 0 && (
+                    <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-bronze-500 font-mono text-[9px] text-ink-950">
+                      {count}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Închide meniul"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-paper-50 hover:bg-paper-50/10"
+                >
+                  <IconClose className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
             <motion.nav

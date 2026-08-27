@@ -68,19 +68,19 @@ export default function AboutPage() {
               <p className="font-display text-3xl text-ink-950">
                 <Counter value={14} suffix="" />
               </p>
-              <p className="mt-1 text-xs text-taupe-500">ani de activitate</p>
+              <p className="mt-1 text-xs text-taupe-600">ani de activitate</p>
             </div>
             <div>
               <p className="font-display text-3xl text-ink-950">
                 <Counter value={38} suffix="" />
               </p>
-              <p className="mt-1 text-xs text-taupe-500">oameni în echipă</p>
+              <p className="mt-1 text-xs text-taupe-600">oameni în echipă</p>
             </div>
             <div>
               <p className="font-display text-3xl text-ink-950">
                 <Counter value={12} suffix="k+" />
               </p>
-              <p className="mt-1 text-xs text-taupe-500">clienți mulțumiți</p>
+              <p className="mt-1 text-xs text-taupe-600">clienți mulțumiți</p>
             </div>
           </div>
         </Reveal>
@@ -97,7 +97,7 @@ export default function AboutPage() {
             recomandăm unelte în care nu credeam. Fiecare produs din gama noastră trece testul
             unui șantier adevărat, nu doar al unei fișe tehnice.”
           </p>
-          <p className="mt-5 font-mono text-xs uppercase tracking-[0.14em] text-taupe-500">
+          <p className="mt-5 font-mono text-xs uppercase tracking-[0.14em] text-taupe-600">
             Andrei Ionescu — Fondator STRATUM
           </p>
         </Reveal>
@@ -115,9 +115,9 @@ export default function AboutPage() {
             {milestones.map((m, i) => (
               <Reveal key={m.year} delay={i * 0.08}>
                 <div className="border-t-2 border-bronze-500 pt-5">
-                  <p className="font-display text-2xl text-bronze-600">{m.year}</p>
+                  <p className="font-display text-2xl text-bronze-700">{m.year}</p>
                   <p className="mt-2 font-display text-lg text-ink-950">{m.title}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-taupe-500">{m.text}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-taupe-600">{m.text}</p>
                 </div>
               </Reveal>
             ))}
@@ -139,7 +139,7 @@ export default function AboutPage() {
                 <v.icon className="h-6 w-6" strokeWidth={1.4} />
               </div>
               <h3 className="mt-4 font-display text-lg text-ink-950">{v.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-taupe-500">{v.text}</p>
+              <p className="mt-2 text-sm leading-relaxed text-taupe-600">{v.text}</p>
             </Reveal>
           ))}
         </div>
@@ -161,10 +161,10 @@ export default function AboutPage() {
                     {member.initials}
                   </div>
                   <p className="mt-5 font-display text-lg text-ink-950">{member.name}</p>
-                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-bronze-600">
+                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-bronze-700">
                     {member.role}
                   </p>
-                  <p className="mt-3 text-sm leading-relaxed text-taupe-500">{member.bio}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-taupe-600">{member.bio}</p>
                 </div>
               </Reveal>
             ))}

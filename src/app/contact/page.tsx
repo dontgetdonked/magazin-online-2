@@ -48,7 +48,7 @@ export default function ContactPage() {
                   <item.icon className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-taupe-400">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-taupe-600">
                     {item.label}
                   </p>
                   <p className="text-sm text-ink-950">{item.value}</p>

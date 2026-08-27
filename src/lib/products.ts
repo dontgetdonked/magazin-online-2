@@ -1,13 +1,6 @@
 import type { Product } from "./types";
-
-const LOREM = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-  "Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Duis ac lacus sed turpis sagittis tincidunt. Nullam pulvinar risus non risus hendrerit venenatis.",
-  "Curabitur blandit tempus porttitor. Maecenas faucibus mollis interdum. Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue sagittis nec.",
-  "Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam porta sem malesuada.",
-  "Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.",
-  "Aenean lacinia bibendum nulla sed consectetur. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum. Donec sed odio dui aliquam eget bibendum.",
-];
+import { getCategory } from "./categories";
+import { normalizeForSearch } from "./utils";
 
 export const products: Product[] = [
   {
@@ -23,14 +16,14 @@ export const products: Product[] = [
     reviewsCount: 214,
     sku: "VTX-PD-X7",
     inStock: true,
-    badges: ["Bestseller"],
+    badges: ["Bestseller", "Reducere"],
     accent: "bronze",
     shortDescription:
       "Bormașină cu percuție 850W, mandrină metalică 13mm și cuplu variabil pentru beton, lemn și metal.",
     description: [
       "Concepută pentru echipe care lucrează zilnic pe șantier, PowerDrive X7 combină un motor de 850W cu un mecanism de percuție robust, oferind putere constantă indiferent de material.",
-      LOREM[0],
-      LOREM[2],
+      "Mandrina fără cheie permite schimbarea rapidă a burghielor între treceri, iar selectorul cu trei moduri — găurire simplă, percuție și înșurubare — acoperă majoritatea lucrărilor de pe un șantier de renovare sau construcție nouă.",
+      "Vine cu geantă de transport rigidă și burghiu de test inclus, plus acces la rețeaua de service STRATUM din toată țara pentru intervenții rapide pe perioada garanției.",
     ],
     specs: [
       { label: "Putere motor", value: "850 W" },
@@ -58,8 +51,8 @@ export const products: Product[] = [
       "Polizor unghiular 1200W cu disc de 125mm, protecție anti-recul și mâner antivibrații.",
     description: [
       "AirCut 125 este alegerea potrivită pentru debitare și polizare de precizie, cu o carcasă din aliaj ușor care reduce oboseala brațului pe parcursul unei zile întregi de lucru.",
-      LOREM[1],
-      LOREM[4],
+      "Discul se schimbă fără cheie, datorită sistemului de blocare a axului, iar mânerul lateral reglabil pe trei poziții se adaptează atât la tăieri drepte, cât și la polizări de suprafață.",
+      "Recomandat pentru debitarea profilelor metalice, curățarea sudurilor și șlefuirea betonului — folosește doar discuri certificate pentru turația maximă indicată pe carcasă.",
     ],
     specs: [
       { label: "Putere motor", value: "1.200 W" },
@@ -87,8 +80,8 @@ export const products: Product[] = [
       "Fierăstrău circular 1600W cu ghidaj laser, disc de 190mm și unghi de tăiere reglabil 0–45°.",
     description: [
       "Lansat recent în gama VOLTRAX, TrueCut 190 aduce un ghidaj laser de precizie și o talpă din aluminiu turnat pentru tăieri drepte, repetabile, în orice tip de lemn masiv sau placaj.",
-      LOREM[2],
-      LOREM[5],
+      "Ghidajul laser proiectează linia de tăiere direct pe material, util mai ales la tăieri lungi, unde o abatere de câțiva milimetri se vede pe toată lungimea piesei.",
+      "Talpa se reglează fin din două șuruburi, fără scule suplimentare, iar sacul colector reduce praful rezultat la tăierea plăcilor de PAL sau MDF.",
     ],
     specs: [
       { label: "Putere motor", value: "1.600 W" },
@@ -117,8 +110,8 @@ export const products: Product[] = [
       "Șurubelniță cu impact pe acumulator 18V, cuplu 180Nm și mandrină hexagonală rapidă.",
     description: [
       "Compactă și puternică, FlexDriver 18V susține montaje intensive de structuri din lemn și metal ușor, cu schimbare de accesoriu fără scule.",
-      LOREM[3],
-      LOREM[0],
+      "Cele cinci trepte de cuplu previn înfundarea capului de șurub în materiale moi, iar iluminarea LED integrată ajută la lucrul în spații slab luminate — dulapuri, poduri, subsoluri.",
+      "Bateria se încarcă complet în 45 de minute și este compatibilă cu întreaga gamă de scule VOLTRAX 18V, așa că o singură baterie de rezervă acoperă mai multe unelte.",
     ],
     specs: [
       { label: "Tensiune", value: "18 V" },
@@ -146,8 +139,8 @@ export const products: Product[] = [
       "Șlefuitor orbital 300W cu sistem de extracție praf și talpă de 125mm.",
     description: [
       "Pentru finisaje impecabile pe lemn, chit sau vopsea, OrbitSand 300 oferă o mișcare orbitală fină și un sac de colectare a prafului cu eficiență ridicată.",
-      LOREM[4],
-      LOREM[1],
+      "Talpa perforată se aliniază cu orificiile discurilor abrazive uzuale, astfel încât sistemul de aspirare captează cea mai mare parte a prafului fin, chiar și la șlefuirea vopselelor vechi.",
+      "Potrivit pentru pregătirea suprafețelor înainte de vopsire sau lăcuire, unde un finisaj uniform contează mai mult decât viteza de îndepărtare a materialului.",
     ],
     specs: [
       { label: "Putere motor", value: "300 W" },
@@ -175,8 +168,8 @@ export const products: Product[] = [
       "Ciocan dulgher forjat dintr-o singură bucată de oțel, cap 500g și mâner ergonomic antișoc.",
     description: [
       "Forjat dintr-o singură piesă de oțel carbon, Forge 500 elimină riscul de desprindere a capului și transferă mai puține vibrații către încheietură.",
-      LOREM[5],
-      LOREM[2],
+      "Capul lustruit reduce ricoșeul cuielor greșit lovite, iar zona de bătaie ușor bombată concentrează impactul exact în centru, chiar și la lovituri rapide și repetate.",
+      "Fabricat pentru a rezista o carieră întreagă — de aceea vine cu garanție pe viață, valabilă pentru orice defect de material sau manoperă.",
     ],
     specs: [
       { label: "Greutate cap", value: "500 g" },
@@ -204,8 +197,8 @@ export const products: Product[] = [
       "Trusă chei tubulare 24 piese, crom-vanadiu, cu cutie rigidă de transport.",
     description: [
       "O trusă completă pentru montaj și întreținere, cu capete tubulare cromate rezistente la coroziune și clichet cu mecanism fin de 72 de dinți.",
-      LOREM[0],
-      LOREM[3],
+      "Cutia rigidă are un decupaj pentru fiecare piesă, astfel încât lipsa unei chei se observă dintr-o privire — util pentru echipe care împart aceeași trusă între mai mulți lucrători.",
+      "Capetele tubulare cromate rezistă la umezeală și la contactul frecvent cu uleiuri, fiind potrivite atât pentru montaj de structuri metalice, cât și pentru întreținere auto ușoară.",
     ],
     specs: [
       { label: "Piese incluse", value: "24" },
@@ -233,8 +226,8 @@ export const products: Product[] = [
       "Clește reglabil profesional 250mm cu fălci autoblocante și acoperire anti-alunecare.",
     description: [
       "Mecanismul autoblocant menține presiunea constantă pe piesă, iar fălcile canelate oferă priză sigură pe suprafețe rotunde sau plate.",
-      LOREM[1],
-      LOREM[4],
+      "Reglajul se face din butonul cu caneluri de pe articulație, fără joc, iar fălcile păstrează presiunea aleasă chiar și atunci când mâna se relaxează pe mâner.",
+      "O alegere bună pentru instalații sanitare și montaj de mobilier metalic, unde ai nevoie de aceeași forță de strângere la fiecare piesă dintr-un lot.",
     ],
     specs: [
       { label: "Lungime", value: "250 mm" },
@@ -255,15 +248,15 @@ export const products: Product[] = [
     rating: 4.7,
     reviewsCount: 54,
     sku: "IGP-CB-600",
-    inStock: true,
-    badges: [],
+    inStock: false,
+    badges: ["Stoc epuizat"],
     accent: "bronze",
     shortDescription:
       "Rangă multifuncțională 600mm cu cap de smulgere și corp hexagonal pentru priză fermă.",
     description: [
       "Utilă la demolări controlate și demontări, ClawBar 60 combină un braț lung pentru efect de pârghie cu un vârf plat pentru desprinderea materialelor fine.",
-      LOREM[2],
-      LOREM[5],
+      "Capul plat se strecoară sub pervazuri, plinte sau lambriuri fără să lase urme adânci, iar profilul hexagonal previne rotirea uneltei în priză atunci când aplici forță laterală.",
+      "Corpul dintr-o singură piesă de oțel elimină punctele slabe de îmbinare, motiv pentru care rezistă la solicitări repetate în demolări controlate sau demontări de structuri din lemn.",
     ],
     specs: [
       { label: "Lungime", value: "600 mm" },
@@ -291,8 +284,8 @@ export const products: Product[] = [
       "Telemetru laser 30m cu precizie ±1,5mm, memorie de măsurători și calcul automat de suprafață.",
     description: [
       "LaserLine 30 înlocuiește ruleta clasică pentru măsurători rapide de distanță, suprafață și volum, direct pe ecranul retroiluminat.",
-      LOREM[3],
-      LOREM[0],
+      "Memoria internă reține ultimele 20 de măsurători, utile la calculul rapid al suprafețelor pentru comenzi de gresie, parchet sau vopsea.",
+      "Clasa 2 de laser este sigură pentru utilizare în interior și exterior, cu vizibilitate bună a punctului chiar și pe suprafețe deschise la culoare, la distanțe medii.",
     ],
     specs: [
       { label: "Rază măsurare", value: "0,05–30 m" },
@@ -320,8 +313,8 @@ export const products: Product[] = [
       "Nivelă cu bulă din aluminiu extrudat, 60cm, cu 3 fiole de precizie 0,5mm/m.",
     description: [
       "Profilul din aluminiu cu nervuri de rigidizare menține liniaritatea corpului chiar și după utilizare intensă pe șantier.",
-      LOREM[4],
-      LOREM[1],
+      "Cele trei fiole — orizontală, verticală și la 45° — acoperă majoritatea lucrărilor de amenajare interioară, de la montaj de rigips la instalarea mobilierului suspendat.",
+      "Capacele de la capete absorb impactul în cazul unei căderi accidentale, protejând atât fiolele, cât și muchia de referință folosită la trasare.",
     ],
     specs: [
       { label: "Lungime", value: "600 mm" },
@@ -349,8 +342,8 @@ export const products: Product[] = [
       "Ruletă profesională 8m, bandă din oțel cu strat anti-uzură și cârlig magnetic.",
     description: [
       "Bandă gradată dublu, lizibilă în orice condiții de lumină, cu blocare fermă și revenire controlată pentru a proteja carcasa.",
-      LOREM[5],
-      LOREM[2],
+      "Cârligul magnetic se prinde de elemente metalice pentru măsurători solo, iar clema de centură ține ruleta la îndemână fără să ocupe un buzunar.",
+      "Banda cu strat anti-uzură rezistă la zgârieturi de pe șantier și își păstrează lizibilitatea gradațiilor mult după ce ruletele obișnuite încep să se șteargă.",
     ],
     specs: [
       { label: "Lungime", value: "8 m" },
@@ -378,8 +371,8 @@ export const products: Product[] = [
       "Cască de protecție ventilată, certificată EN 397, cu sistem de reglaj rapid.",
     description: [
       "Carcasa din ABS rezistă la impact și radiații UV, iar căptușeala interioară detașabilă poate fi spălată pentru igienă pe termen lung.",
-      LOREM[0],
-      LOREM[3],
+      "Sistemul de reglaj cu rotiță se ajustează cu o singură mână, chiar și cu mănuși de protecție, iar cele șase fante de ventilație reduc senzația de căldură pe parcursul zilei.",
+      "Obligatorie pe majoritatea șantierelor conform normelor de protecția muncii — verifică periodic carcasa pentru fisuri și înlocuiește casca după orice impact semnificativ.",
     ],
     specs: [
       { label: "Certificare", value: "EN 397" },
@@ -407,8 +400,8 @@ export const products: Product[] = [
       "Ochelari de protecție anti-zgâriere și anti-aburire, certificați EN 166.",
     description: [
       "Lentila din policarbonat filtrează radiațiile UV și oferă un câmp vizual larg, fără distorsiuni pe margini.",
-      LOREM[1],
-      LOREM[4],
+      "Brațele flexibile se ajustează pe lățimea capului fără puncte de presiune, iar tratamentul anti-aburire rezistă la utilizare intensă în spații închise sau pe vreme umedă.",
+      "Recomandați pentru șlefuire, tăiere și lucrări cu praf sau așchii — completează, nu înlocuiesc, o mască de protecție respiratorie atunci când situația o cere.",
     ],
     specs: [
       { label: "Certificare", value: "EN 166" },
@@ -436,8 +429,8 @@ export const products: Product[] = [
       "Mănuși de lucru cu întărituri pe palmă și degete, rezistente la abraziune.",
     description: [
       "Palma dublu-întărită cu poliuretan menține priza sigură pe unelte umede sau unsuroase, fără a sacrifica sensibilitatea tactilă.",
-      LOREM[2],
-      LOREM[5],
+      "Zona întărită acoperă palma și primele falange, exact acolo unde apare cel mai des uzura la manipularea materialelor abrazive sau a uneltelor cu suprafețe aspre.",
+      "Stocul pentru mărimile mari se epuizează primul — dacă echipa ta poartă în mod normal L sau XL, recomandăm comanda din timp pentru grupuri mai numeroase.",
     ],
     specs: [
       { label: "Certificare", value: "EN 388" },
@@ -465,8 +458,8 @@ export const products: Product[] = [
       "Set 50 ancore mecanice M10 din oțel zincat, pentru fixări structurale în beton.",
     description: [
       "Sistemul de expansiune uniformă distribuie sarcina pe toată lungimea găurii, recomandat pentru console, balustrade și structuri suspendate.",
-      LOREM[3],
-      LOREM[0],
+      "Fiecare ancoră se montează cu o cheie tubulară standard de 17mm, fără scule speciale, iar manșonul din oțel zincat previne coroziunea în medii cu umiditate.",
+      "Sarcina admisă variază în funcție de rezistența betonului suport — pentru elemente structurale, verifică fișa tehnică completă înainte de dimensionarea unei console sau balustrade.",
     ],
     specs: [
       { label: "Diametru", value: "M10" },
@@ -494,8 +487,8 @@ export const products: Product[] = [
       "Clemă de tâmplărie 400mm cu bară din oțel și strângere rapidă cu o mână.",
     description: [
       "Mecanismul cu declanșator permite reglaj rapid, iar fălcile late din polimer protejează suprafețele finisate în timpul asamblării.",
-      LOREM[4],
-      LOREM[1],
+      "Declanșatorul de eliberare rapidă lasă clema aproape de material între două strângeri, un avantaj real la asamblarea repetitivă de rame sau corpuri de mobilier.",
+      "Fălcile late din polimer se pot roti pentru a se adapta la unghiuri neregulate, fără să marcheze lemnul finisat sau lăcuit.",
     ],
     specs: [
       { label: "Deschidere", value: "400 mm" },
@@ -523,8 +516,8 @@ export const products: Product[] = [
       "Generator pe benzină 3.2kW cu pornire electrică și rezervor de 15 litri.",
     description: [
       "Proiectat pentru alimentarea sculelor electrice pe șantiere fără acces la rețea, cu un nivel de zgomot redus pentru clasa sa de putere.",
-      LOREM[5],
-      LOREM[2],
+      "Priza dublă permite alimentarea simultană a două unelte de putere medie, util atunci când echipa lucrează în paralel pe același punct de lucru fără acces la rețea.",
+      "Verifică nivelul de ulei înainte de fiecare pornire și lasă generatorul să se răcească complet înainte de realimentare, pentru o durată de viață mai lungă a motorului.",
     ],
     specs: [
       { label: "Putere maximă", value: "3.200 W" },
@@ -552,8 +545,8 @@ export const products: Product[] = [
       "Compresor de aer 50L, 2 cilindri, pentru pistoale de vopsit și scule pneumatice.",
     description: [
       "Rezervorul de 50 de litri asigură autonomie ridicată între cicluri de pompare, iar sistemul de dublă filtrare protejează motorul pe termen lung.",
-      LOREM[0],
-      LOREM[3],
+      "Cei doi cilindri mențin presiunea constantă chiar și la utilizare continuă, un avantaj clar față de compresoarele cu un singur cilindru la vopsit cu pistolul pe suprafețe mari.",
+      "Golește rezervorul de condens după fiecare sesiune de lucru — umiditatea acumulată este principala cauză de coroziune prematură la compresoarele folosite pe șantier.",
     ],
     specs: [
       { label: "Capacitate rezervor", value: "50 L" },
@@ -581,8 +574,8 @@ export const products: Product[] = [
       "Mixer de mortar 140L cu tambur basculant și șasiu pe roți pentru mobilitate pe șantier.",
     description: [
       "Tamburul din oțel cu palete elicoidale asigură o omogenizare rapidă a mortarului, betonului ușor sau adezivilor pentru gresie.",
-      LOREM[1],
-      LOREM[4],
+      "Unghiul de basculare a tamburului permite golirea completă a amestecului fără resturi lipite pe pereți, reducând timpul pierdut între două șarje.",
+      "Șasiul pe roți cu frână de blocare face deplasarea ușoară între punctele de lucru, chiar și pe teren neuniform sau ușor înclinat.",
     ],
     specs: [
       { label: "Capacitate tambur", value: "140 L" },
@@ -606,6 +599,24 @@ export function getRelatedProducts(product: Product, count = 4) {
   return products
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, count);
+}
+
+export function searchProducts(query: string) {
+  const q = normalizeForSearch(query.trim());
+  if (!q) return [];
+  return products.filter((p) => {
+    const haystack = [
+      p.name,
+      p.brand,
+      p.shortDescription,
+      p.sku,
+      getCategory(p.category)?.name ?? "",
+      ...p.specs.map((s) => s.value),
+    ]
+      .map(normalizeForSearch)
+      .join(" ");
+    return haystack.includes(q);
+  });
 }
 
 export function getFeaturedProducts(count = 8) {

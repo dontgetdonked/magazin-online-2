@@ -1,22 +1,73 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/components/providers/cart-provider";
-import { toolIcons, IconClose, IconMinus, IconPlus, IconCart, IconCheck, IconArrowRight } from "@/components/icons";
-import { formatPrice } from "@/lib/utils";
+import { toolIcons, IconClose, IconMinus, IconPlus, IconCart, IconCheck, IconArrowRight, IconTrash } from "@/components/icons";
+import { formatPrice, formatCount, cn } from "@/lib/utils";
 
 const FREE_SHIPPING_THRESHOLD = 500;
 const SHIPPING_COST = 25;
+const LAST_ORDER_KEY = "stratum-last-order";
+const LAST_ORDER_TTL_MS = 60 * 60 * 1000;
+
+function readLastOrder(): { orderNumber: string; placedAt: number } | null {
+  try {
+    const raw = window.localStorage.getItem(LAST_ORDER_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed?.orderNumber !== "string" || typeof parsed?.placedAt !== "number") return null;
+    if (Date.now() - parsed.placedAt > LAST_ORDER_TTL_MS) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
 
 export function CartPageContent() {
   const { lines, subtotal, count, setQuantity, removeItem, clear } = useCart();
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [orderNumber] = useState(() => `STR-${Math.floor(100000 + Math.random() * 899999)}`);
+  const [orderNumber, setOrderNumber] = useState("");
+  const [confirmingClear, setConfirmingClear] = useState(false);
+
+  // A page refresh right after checkout would otherwise drop back to an
+  // "empty cart" view with no way to see the confirmation again — recover
+  // the just-placed order from localStorage so the receipt survives a reload.
+  // localStorage only exists client-side, so this can't be read during
+  // render without desyncing from the server-rendered markup.
+  useEffect(() => {
+    const last = readLastOrder();
+    if (last) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setOrderNumber(last.orderNumber);
+      setOrderPlaced(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!confirmingClear) return;
+    const timeout = window.setTimeout(() => setConfirmingClear(false), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [confirmingClear]);
 
   const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
+
+  function placeOrder() {
+    const newOrderNumber = `STR-${Math.floor(100000 + Math.random() * 899999)}`;
+    try {
+      window.localStorage.setItem(
+        LAST_ORDER_KEY,
+        JSON.stringify({ orderNumber: newOrderNumber, placedAt: Date.now() }),
+      );
+    } catch {
+      // localStorage unavailable — confirmation just won't survive a refresh.
+    }
+    setOrderNumber(newOrderNumber);
+    setOrderPlaced(true);
+    clear();
+  }
 
   const progress = useMemo(
     () => Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100)),
@@ -71,8 +122,8 @@ export function CartPageContent() {
       <div className="lg:col-span-2">
         <div className="flex items-baseline justify-between">
           <h1 className="font-display text-3xl text-ink-950">Coșul tău</h1>
-          <span className="font-mono text-xs uppercase tracking-[0.14em] text-taupe-500">
-            {count} produse
+          <span className="font-mono text-xs uppercase tracking-[0.14em] text-taupe-600">
+            {formatCount(count, "produs", "produse")}
           </span>
         </div>
 
@@ -114,7 +165,7 @@ export function CartPageContent() {
                   <div className="flex flex-1 flex-col justify-between">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-taupe-400">
+                        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-taupe-600">
                           {product.brand}
                         </p>
                         <Link href={`/magazin/${product.slug}`}>
@@ -124,7 +175,7 @@ export function CartPageContent() {
                       <button
                         onClick={() => removeItem(product.id)}
                         aria-label="Elimină produsul"
-                        className="text-taupe-400 transition-colors hover:text-ember-500"
+                        className="text-taupe-600 transition-colors hover:text-ember-500"
                       >
                         <IconClose className="h-4 w-4" />
                       </button>
@@ -147,8 +198,15 @@ export function CartPageContent() {
                           <IconPlus className="h-3.5 w-3.5" />
                         </button>
                       </div>
-                      <span className="font-display text-lg text-ink-950">
-                        {formatPrice(product.price * quantity)}
+                      <span className="text-right">
+                        <span className="block font-display text-lg leading-none text-ink-950">
+                          {formatPrice(product.price * quantity)}
+                        </span>
+                        {quantity > 1 && (
+                          <span className="mt-1 block font-mono text-[11px] text-taupe-600">
+                            {formatPrice(product.price)} / buc
+                          </span>
+                        )}
                       </span>
                     </div>
                   </div>
@@ -159,10 +217,21 @@ export function CartPageContent() {
         </ul>
 
         <button
-          onClick={clear}
-          className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-taupe-500 underline underline-offset-4 hover:text-ember-500"
+          onClick={() => {
+            if (confirmingClear) {
+              clear();
+              setConfirmingClear(false);
+            } else {
+              setConfirmingClear(true);
+            }
+          }}
+          className={cn(
+            "mt-6 flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] underline underline-offset-4",
+            confirmingClear ? "text-ember-600" : "text-taupe-600 hover:text-ember-600",
+          )}
         >
-          Golește coșul
+          <IconTrash className="h-3.5 w-3.5" />
+          {confirmingClear ? "Sigur? Apasă din nou pentru a confirma" : "Golește coșul"}
         </button>
       </div>
 
@@ -185,18 +254,15 @@ export function CartPageContent() {
             <span className="font-display text-ink-950">Total</span>
             <span className="font-display text-xl text-ink-950">{formatPrice(total)}</span>
           </div>
+          <p className="mt-5 text-center text-xs text-taupe-600">
+            Proiect de portofoliu — nicio plată nu va fi procesată.
+          </p>
           <button
-            onClick={() => {
-              setOrderPlaced(true);
-              clear();
-            }}
-            className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-ink-950 font-mono text-xs uppercase tracking-[0.16em] text-paper-50 transition-colors hover:bg-bronze-600"
+            onClick={placeOrder}
+            className="mt-3 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-ink-950 font-mono text-xs uppercase tracking-[0.16em] text-paper-50 transition-colors hover:bg-bronze-600"
           >
             Plasează comanda
           </button>
-          <p className="mt-3 text-center text-xs text-taupe-400">
-            Proiect de portofoliu — nicio plată nu va fi procesată.
-          </p>
         </div>
       </div>
     </div>

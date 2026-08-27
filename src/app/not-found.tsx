@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
       <LogoMark className="h-10 w-10 text-taupe-400" />
-      <p className="mt-6 font-mono text-sm tracking-[0.2em] text-bronze-600">EROARE 404</p>
+      <p className="mt-6 font-mono text-sm tracking-[0.2em] text-bronze-700">EROARE 404</p>
       <h1 className="text-balance mt-3 font-display text-4xl text-ink-950 sm:text-5xl">
         Această unealtă nu se află în inventar.
       </h1>

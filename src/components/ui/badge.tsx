@@ -6,6 +6,7 @@ const styles: Record<BadgeType, string> = {
   Bestseller: "bg-bronze-500 text-ink-950",
   Reducere: "bg-ember-500 text-paper-50",
   "Stoc limitat": "bg-ink-950 text-paper-50",
+  "Stoc epuizat": "bg-taupe-600 text-paper-50",
 };
 
 export function ProductBadge({ tone, className }: { tone: BadgeType; className?: string }) {

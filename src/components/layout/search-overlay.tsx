@@ -3,25 +3,20 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { products } from "@/lib/products";
+import { searchProducts } from "@/lib/products";
 import { formatPrice } from "@/lib/utils";
-import { toolIcons, IconSearch, IconClose } from "@/components/icons";
+import { useOverlayDialog } from "@/hooks/use-overlay-dialog";
+import { toolIcons, IconSearch, IconClose, IconArrowRight } from "@/components/icons";
+
+const RESULT_LIMIT = 6;
 
 export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState("");
+  const panelRef = useOverlayDialog<HTMLDivElement>(isOpen, onClose);
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return products
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q) ||
-          p.shortDescription.toLowerCase().includes(q),
-      )
-      .slice(0, 6);
-  }, [query]);
+  const matches = useMemo(() => searchProducts(query), [query]);
+  const results = matches.slice(0, RESULT_LIMIT);
+  const hasMore = matches.length > RESULT_LIMIT;
 
   return (
     <AnimatePresence>
@@ -32,9 +27,14 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
             className="absolute inset-0 bg-ink-950/70 backdrop-blur-sm"
           />
           <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Căutare produse"
             initial={{ opacity: 0, y: -24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -24 }}
@@ -44,10 +44,10 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
             <div className="flex items-center gap-3 border-b border-paper-50/10 px-4 py-4">
               <IconSearch className="h-5 w-5 text-taupe-400" />
               <input
-                autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Caută unelte, branduri, categorii…"
+                aria-label="Text de căutare"
                 className="flex-1 bg-transparent text-paper-50 placeholder:text-taupe-500 focus:outline-none"
               />
               <button
@@ -89,6 +89,16 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   </Link>
                 );
               })}
+              {hasMore && (
+                <Link
+                  href={`/magazin?cauta=${encodeURIComponent(query.trim())}`}
+                  onClick={onClose}
+                  className="mt-1 flex items-center justify-center gap-2 rounded-2xl px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-bronze-300 transition-colors hover:bg-paper-50/5"
+                >
+                  Vezi toate cele {matches.length} rezultate în magazin
+                  <IconArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              )}
             </div>
           </motion.div>
         </div>

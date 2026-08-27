@@ -45,7 +45,7 @@ export default async function ProductPage({
   return (
     <div className="bg-paper-50">
       <div className="mx-auto max-w-7xl px-6 pt-8 lg:px-8">
-        <nav className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-taupe-500">
+        <nav className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-taupe-600">
           <Link href="/" className="hover:text-ink-950">
             Acasă
           </Link>
@@ -77,7 +77,7 @@ export default async function ProductPage({
               <ProductBadge key={b} tone={b} />
             ))}
           </div>
-          <p className="mt-4 font-mono text-xs uppercase tracking-[0.16em] text-bronze-600">
+          <p className="mt-4 font-mono text-xs uppercase tracking-[0.16em] text-bronze-700">
             {product.brand} · SKU {product.sku}
           </p>
           <h1 className="mt-2 font-display text-4xl font-medium tracking-tight text-ink-950 sm:text-5xl">
@@ -95,7 +95,7 @@ export default async function ProductPage({
               {formatPrice(product.price)}
             </span>
             {product.oldPrice && (
-              <span className="font-mono text-base text-taupe-400 line-through">
+              <span className="font-mono text-base text-taupe-600 line-through">
                 {formatPrice(product.oldPrice)}
               </span>
             )}
@@ -108,26 +108,26 @@ export default async function ProductPage({
           <div className="mt-8 grid grid-cols-3 gap-4 border-y border-ink-950/10 py-6">
             <div className="flex flex-col items-center gap-2 text-center">
               <IconShieldCheck className="h-5 w-5 text-bronze-600" />
-              <span className="text-xs text-taupe-500">Garanție inclusă</span>
+              <span className="text-xs text-taupe-600">Garanție inclusă</span>
             </div>
             <div className="flex flex-col items-center gap-2 text-center">
               <IconTruck className="h-5 w-5 text-bronze-600" />
-              <span className="text-xs text-taupe-500">Livrare 24–48h</span>
+              <span className="text-xs text-taupe-600">Livrare 24–48h</span>
             </div>
             <div className="flex flex-col items-center gap-2 text-center">
               <IconClock className="h-5 w-5 text-bronze-600" />
-              <span className="text-xs text-taupe-500">Retur 30 zile</span>
+              <span className="text-xs text-taupe-600">Retur 30 zile</span>
             </div>
           </div>
 
           <div className="mt-8">
-            <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-taupe-500">
+            <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-taupe-600">
               Specificații tehnice
             </h2>
             <dl className="mt-4 divide-y divide-ink-950/10 border-t border-ink-950/10">
               {product.specs.map((spec) => (
                 <div key={spec.label} className="flex justify-between py-3 text-sm">
-                  <dt className="text-taupe-500">{spec.label}</dt>
+                  <dt className="text-taupe-600">{spec.label}</dt>
                   <dd className="font-medium text-ink-950">{spec.value}</dd>
                 </div>
               ))}

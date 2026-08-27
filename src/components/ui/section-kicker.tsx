@@ -13,7 +13,7 @@ export function SectionKicker({
     <div
       className={cn(
         "flex items-center gap-3 font-mono text-xs uppercase tracking-[0.28em]",
-        light ? "text-bronze-300" : "text-bronze-600",
+        light ? "text-bronze-300" : "text-bronze-700",
         className,
       )}
     >
