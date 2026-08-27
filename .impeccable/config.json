@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "src/app/globals.css"
+        ],
+        "createdAt": "2026-08-27T11:11:32.160Z",
+        "reason": "Claude: .grid-light/.grid-dark are scoped exclusively to the schematic illustrations (ProductPlate/HeroBlueprint/LocationPlate in illustrations.tsx) - literal blueprint/measurement-diagram surfaces, the exact exception this rule names. Verified by usage grep (only 3 call sites, all inside illustrations.tsx) after removing 7 decorative uses on plain hero/CTA/page-header sections; independently re-confirmed by an Impeccable critique Assessment B sub-agent."
+      }
+    ]
+  }
+}

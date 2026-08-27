@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Typography */
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* Ink — warm near-black, used for dark sections & primary text */
+  --color-ink-950: #0d0c0a;
+  --color-ink-900: #17140f;
+  --color-ink-800: #211c15;
+  --color-ink-700: #332c22;
+  --color-ink-600: #4a4033;
+
+  /* Paper — warm off-white, used for light sections */
+  --color-paper-50: #faf7f0;
+  --color-paper-100: #f3ede0;
+  --color-paper-200: #e7ddc8;
+
+  /* Taupe — muted warm neutrals for secondary text */
+  --color-taupe-200: #cfc4ae;
+  --color-taupe-400: #a79c8a;
+  --color-taupe-500: #8a7e6a;
+  --color-taupe-600: #6b6151;
+
+  /* Bronze — primary luxury accent */
+  --color-bronze-300: #e3c583;
+  --color-bronze-400: #d9a85c;
+  --color-bronze-500: #c4903d;
+  --color-bronze-600: #a5752b;
+  --color-bronze-700: #7d5a22;
+
+  /* Steel — cool secondary accent */
+  --color-steel-300: #a9b6bd;
+  --color-steel-400: #7c8b96;
+  --color-steel-500: #5c6b76;
+  --color-steel-600: #3a4750;
+  --color-steel-700: #262f36;
+
+  /* Ember — energetic tertiary accent (sale / new) */
+  --color-ember-400: #e8703a;
+  --color-ember-500: #d65a2a;
+  --color-ember-600: #b8451e;
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-marquee-fast: marquee 18s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background-color: var(--color-bronze-500);
+  color: var(--color-ink-950);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper-50);
+  color: var(--color-ink-950);
+  font-feature-settings:
+    "ss01" 1,
+    "cv01" 1;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-taupe-400);
+  border-radius: 999px;
+  border: 2px solid var(--color-paper-100);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-taupe-500);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-bronze-500);
+  outline-offset: 3px;
+}
+
+/*
+ * Fine blueprint-style grid. Reserved for the schematic illustrations
+ * (ProductPlate / HeroBlueprint / LocationPlate in illustrations.tsx) where
+ * it reads as an actual technical-drawing surface — not a general-purpose
+ * section background. Applying it to plain hero/CTA/page-header sections
+ * turns it into wallpaper and dilutes the one place it means something.
+ *
+ * Named "grid-*" (not "bg-grid-*") on purpose: tailwind-merge pattern-matches
+ * any "bg-<word>" class as a background-color utility and will silently drop
+ * an earlier bg-color class when the two are merged together via cn(), even
+ * though this one only sets background-image. Keeping it out of the "bg-"
+ * namespace avoids that false-positive conflict.
+ */
+.grid-light {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-ink-950) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-ink-950) 6%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.grid-dark {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-paper-50) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-paper-50) 7%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-14px) rotate(var(--rot, 0deg));
+  }
+}
+
+.hero-float {
+  transform: rotate(var(--rot, 0deg));
+  animation: hero-float 7s ease-in-out infinite;
+}
+
+/* Subtle grain overlay for a tactile, non-flat surface */
+.bg-grain {
+  position: relative;
+  isolation: isolate;
+}
+.bg-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
